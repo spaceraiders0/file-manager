@@ -72,10 +72,10 @@ def typecast_setting(setting_name: str, value: str) -> [None, list, str, int]:
     except KeyError:
         return None
 
-    if isinstance(default_value, list):
+    if isinstance(value, list):
         return re.split(DELIMITER_PATTERN,
                         strip_delimiters(value, "[", "]"))
-    elif isinstance(default_value, str):
+    elif isinstance(value, str):
         return value
     else:
         return default_value
