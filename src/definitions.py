@@ -44,22 +44,27 @@ def load_settings() -> dict:
     for key, value in settings_parser["file_manager"].items():
         try:
             # Determine how this value should be casted depending
-            # on the tyit's you!pe of the default value.
+            # on the type of the default value.
             if isinstance(loaded_settings[key], list):
-                stripped_value = strip_surrounds(value, ["'\"", "'\""])
+                stripped_value = strip_surrounds(value, ["[", "]"])
                 loaded_settings[key] = re.split(DELIMITER_PATTERN,
                                                 stripped_value)
             elif isinstance(loaded_settings[key], int):
-                try:
-                    loaded_settings[key] = int(value)
-                except ValueError:
-                    print(f"Setting type {key} is {type(default)}. Settings has: {value}")
+                loaded_settings[key] = int(value)
             else:
-                loaded_settings[key] = value
+                loaded_settings[key] = strip_surrounds(value, ["'\"", "'\""])
         except KeyError:
             raise ValueError(f"{key} is not a valid setting.")
 
     return loaded_settings
+
+def validate_settings(settings_dict: dict):
+    """Takes in a dictionary of settings and attempts to validate
+    them.
+    """
+
+    if settings_dict["workspaces"] == ['']:
+
 
 
 def truncate_text(text: str, width: int, truncate_char: str = "..."):
@@ -75,4 +80,3 @@ def truncate_text(text: str, width: int, truncate_char: str = "..."):
     """
 
     min_text = text[:width - len(truncate_char)]
-

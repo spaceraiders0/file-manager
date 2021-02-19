@@ -1,9 +1,5 @@
 """The executable part of the file manager.
 """
 
-import definitions
+import settings
 
-settings = definitions.load_settings()
-workspace_list = settings["workspace_separator"].join(settings["workspaces"])
-
-print(f"[ {workspace_list} ]")
