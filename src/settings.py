@@ -16,7 +16,8 @@ DELIMITER_PATTERN = ", ?"
 settings_parser = ConfigParser()
 settings_information = {
     "workspaces": setting(["1", "2", "3", "4"], ([""], "")),
-    "workspace_seperator": setting("-", ("",))
+    "workspace_seperator": setting("-", ("",)),
+    "foobar": setting("fss", ())
 }
 
 
@@ -47,16 +48,21 @@ def is_valid_setting(key: str, cmp: any) -> bool:
     :param cmp: the value to compare the setting's
             validators to
     :type cmp: any
+    :raises: ValueError
     """
 
-    validators = settings_information[key].validators
+    try:
+        validators = settings_information[key].validators
+    except KeyError:
+        raise ValueError(f"'{key}' is not a setting.")
 
+    # Compares the value to every invalid option for a given
+    # datatype.
     return not any(validator == cmp for validator in validators)
 
 
 def typecast_setting(setting_name: str, value: str) -> [None, list, str, int]:
     """Returns a typecasted version of the provided value.
-    It will return the default value if it could not be casted.
 
     :param setting_name: the name of the setting
     :type setting_name: str
@@ -72,13 +78,35 @@ def typecast_setting(setting_name: str, value: str) -> [None, list, str, int]:
     except KeyError:
         return None
 
-    if isinstance(value, list):
+    if isinstance(default_value, list):
         return re.split(DELIMITER_PATTERN,
                         strip_delimiters(value, "[", "]"))
-    elif isinstance(value, str):
-        return value
-    else:
-        return default_value
+    elif isinstance(default_value, int):
+        return int(value)
+    elif isinstance(default_value, str):
+        return strip_delimiters(value, "\"'", "\"'")
 
 
-print(typecast_setting("workspaces", "1, 2, 3sssssdddd"))
+def load_settings() -> dict:
+    """Loads the settings, assigning defaults when needed.
+
+    :returns: the loaded settings
+    :rtype: dict
+    :raises: ValueError
+    """
+
+    settings_parser.read(SETTINGS)
+    loaded_settings = settings_information.copy()
+
+    for setting_name, setting_value in settings_parser["file_manager"].items():
+        casted_value = typecast_setting(setting_name, setting_value)
+
+        if is_valid_setting(setting_name, casted_value):
+            loaded_settings[setting_name] = casted_value
+        else:
+            raise ValueError(f"Incorrect value for {setting_name}")
+
+    return loaded_settings
+
+
+print(load_settings())
