@@ -3,3 +3,4 @@
 
 import settings
 
+print("Settings: ", settings.load_settings())

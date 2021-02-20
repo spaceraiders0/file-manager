@@ -8,5 +8,7 @@ from pathlib import Path
 
 class Workspace():
     def __init__(self, name: str, directory: Path = Path("~").expanduser()j):
-        self.name = 
-        self.opened_directory = directory 
+        self.name = name
+        self.opened_directory = directory
+
+my_workspace = Workspace("a", "~")
