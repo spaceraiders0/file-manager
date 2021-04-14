@@ -17,6 +17,7 @@ settings_parser = ConfigParser()
 settings_information = {
     "workspaces": setting(["1", "2", "3", "4"], ([""], "")),
     "workspace_seperator": setting("-", ("",)),
+    "directory_truncation": setting(20, ()),
 }
 
 
