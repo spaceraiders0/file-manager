@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # From this project
-*.ini
+a.out
 
 # C extensions
 *.so
