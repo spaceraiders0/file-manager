@@ -5,6 +5,7 @@ __pycache__/
 
 # From this project
 a.out
+*.gch
 
 # C extensions
 *.so
